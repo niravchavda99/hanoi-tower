@@ -18,33 +18,36 @@ const draw = () => {
 };
 
 draw();
+let count = 0;
+let steps: {disk: number, from: number, to: number}[] = [];
 
 const solution = (n: number, from: number, to: number, aux: number) => {
-    setTimeout(() => {
-        if(n == 1) {
-            console.log(`Move disk 1 from rod ${from} to rod ${to}`);
-            towers[from - 1].move(towers[to - 1]);
-            towers[to - 1].add(towers[from - 1].remove());
-            draw();    
-            return;
-        }
-        
-        solution(n - 1, from, aux, to);
-        console.log(`Move disk ${n} from rod ${from} to rod ${to}`);
-        towers[from - 1].move(towers[to - 1]);
-        towers[to - 1].add(towers[from - 1].remove());
-        draw();
-        solution(n - 1, aux, to, from);
-    }, 2000);
+    if(n === 1) {
+        // console.log(`Move disk 1 from Tower ${from} to Tower ${to}`);
+        steps.push({disk: 1, from, to});
+        return;
+    }
+    
+    solution((n - 1), from, aux, to);
+    steps.push({disk: n, from, to});
+    // console.log(`Move disk ${n} from Tower ${from} to Tower ${to}`);
+    solution((n - 1), aux, to, from);
 };
 
-// canvas.addEventListener("click", (e: MouseEvent) => {
-//     const point: HanoiTower.Point = new HanoiTower.Point(e.clientX - rect.left, e.clientY - rect.top);
-//     for(let i = 0; i < disks.length; i++) {
-//         if(disks[i].isInside(point)) console.log(disks[i]);
-//     }    
-// });
-
-
-
 solution(3, 1, 3, 2);
+console.log(steps);
+
+const nextStep = () => {
+    if(count >= steps.length) {
+        console.log("Problem Solved!");
+        document.getElementById("nextstep").style.display = "none";
+        return;
+    }
+
+    const {disk, from, to} = steps[count++];
+    console.log(`Moving disk ${disk} from Tower ${from} to Tower ${to}`);
+    towers[from - 1].move(towers[to - 1]);
+    towers[to - 1].add(towers[from - 1].remove());
+    draw();
+};
+        
