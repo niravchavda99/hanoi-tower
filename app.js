@@ -39,13 +39,50 @@ function load() {
 }
 load();
 draw();
-// solution(numberofdisks, 1, 3, 2);
-// console.log(steps);
+const move = (tower, disk, to) => {
+    let move = "up";
+    const side = tower.origin.x > to.x ? "left" : "right";
+    const animate = () => {
+        const p = disk.originPoint;
+        if (move === "none")
+            return;
+        if (move === "up") {
+            disk.originPoint = new HanoiTower.Point(p.x, p.y - 3);
+            if (disk.originPoint.y <= tower.top().y)
+                move = side;
+        }
+        if (move === "right") {
+            disk.originPoint = new HanoiTower.Point(p.x + 4, p.y);
+            if (disk.originPoint.x >= to.x) {
+                disk.originPoint = new HanoiTower.Point(to.x, p.y);
+                move = "down";
+            }
+        }
+        if (move === "left") {
+            disk.originPoint = new HanoiTower.Point(p.x - 4, p.y);
+            if (disk.originPoint.x <= to.x) {
+                disk.originPoint = new HanoiTower.Point(to.x, p.y);
+                move = "down";
+            }
+        }
+        if (move === "down") {
+            disk.originPoint = new HanoiTower.Point(to.x, p.y + 3);
+            if (disk.originPoint.y >= to.y) {
+                move = "none";
+                disk.originPoint = to;
+            }
+        }
+        draw();
+        window.requestAnimationFrame(animate);
+    };
+    animate();
+};
 const nextStep = () => {
     const { disk, from, to } = steps[count++];
     console.log(`Moving disk ${disk} from Tower ${from} to Tower ${to}`);
-    towers[from - 1].move(towers[to - 1]);
-    towers[to - 1].add(towers[from - 1].remove());
+    const removed = towers[from - 1].move(towers[to - 1]);
+    console.log("Removed: ", removed);
+    move(towers[from - 1], removed, towers[to - 1].getNextDiskPoint());
     draw();
     if (count >= steps.length) {
         setTimeout(() => alert("Problem Solved!"), 500);

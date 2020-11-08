@@ -41,7 +41,8 @@ var HanoiTower;
             this.label = label;
             this.initialDisks = initialDisks;
             this.gap = 18;
-            this.getNextDiskPoint = () => new Point(this.originPoint.x, this.originPoint.y - (this.disks.length + 1) * this.gap);
+            this.top = () => new Point(this.originPoint.x, this.originPoint.y - this.height - 50);
+            this.getNextDiskPoint = () => new Point(this.originPoint.x, this.originPoint.y - this.disks.length * this.gap);
             this.getDisks = () => [...this.disks];
             // add/remove a disk to/from the top of the tower
             this.add = (disk) => this.disks.push(disk);
@@ -86,12 +87,16 @@ var HanoiTower;
             for (let i = 0; i < this.disks.length; i++)
                 this.disks[i].draw();
         }
+        get origin() { return this.originPoint; }
         move(to) {
             if (this.disks.length < 1)
                 return;
-            const toPoint = to.getNextDiskPoint();
-            const disk = this.disks[this.disks.length - 1];
-            disk.originPoint = toPoint;
+            // const toPoint: Point = to.getNextDiskPoint();
+            // const disk: Disk = this.disks[this.disks.length - 1];
+            // disk.originPoint = toPoint;
+            const removed = this.remove();
+            to.add(removed);
+            return removed;
         }
     }
     HanoiTower.Tower = Tower;

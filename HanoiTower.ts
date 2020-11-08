@@ -100,7 +100,11 @@ namespace HanoiTower {
             for(let i = 0; i < this.disks.length; i++) this.disks[i].draw();
         }
 
-        public getNextDiskPoint = () => new Point(this.originPoint.x, this.originPoint.y - (this.disks.length + 1) * this.gap);
+        get origin() { return this.originPoint; }
+
+        public top = () => new Point(this.originPoint.x, this.originPoint.y - this.height - 50);
+
+        public getNextDiskPoint = () => new Point(this.originPoint.x, this.originPoint.y - this.disks.length * this.gap);
         
         public getDisks = () => [...this.disks];
 
@@ -111,9 +115,12 @@ namespace HanoiTower {
         public move(to: Tower) {
             if(this.disks.length < 1) return;
 
-            const toPoint: Point = to.getNextDiskPoint();
-            const disk: Disk = this.disks[this.disks.length - 1];
-            disk.originPoint = toPoint;
+            // const toPoint: Point = to.getNextDiskPoint();
+            // const disk: Disk = this.disks[this.disks.length - 1];
+            // disk.originPoint = toPoint;
+            const removed = this.remove();
+            to.add(removed);
+            return removed;
         }
     }
 
