@@ -50,7 +50,7 @@ namespace HanoiTower {
             private width: number, 
             private context: CanvasRenderingContext2D, 
             private label: string = "Tower",
-            private initialDisks: number = 0
+            public initialDisks: number = 0
             ) {
                 this.height *= 22;
                 this.width *= 18;
